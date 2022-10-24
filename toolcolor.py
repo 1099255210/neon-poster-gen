@@ -1,7 +1,5 @@
 from collections import namedtuple
 
-from regex import F
-
 Color = namedtuple('RGB', ['red', 'green', 'blue'])
 
 class RGB(Color):
@@ -60,6 +58,30 @@ DIMEDCOLOR3 = RGB(254, 243, 83)
 VIVIDCOLOR1 = RGB(241, 12, 125)
 VIVIDCOLOR2 = RGB(0, 200, 244)
 VIVIDCOLOR3 = RGB(254, 227, 4)
+
+ColorSet = {
+  'PURECOLOR1': RGB(255, 0, 255),
+  'PURECOLOR2': RGB(0, 255, 255),
+  'PURECOLOR3': RGB(255, 255, 0),
+
+  'DIMEDCOLOR1': RGB(246, 128, 186),
+  'DIMEDCOLOR2': RGB(121, 234, 249),
+  'DIMEDCOLOR3': RGB(254, 243, 83),
+
+  'VIVIDCOLOR1': RGB(241, 12, 125),
+  'VIVIDCOLOR2': RGB(0, 200, 244),
+  'VIVIDCOLOR3': RGB(254, 227, 4),
+}
+
+NeonColorSet = {
+  'VIVIDCOLOR1': RGB(241, 12, 125),
+  'VIVIDCOLOR2': RGB(0, 200, 244),
+  'VIVIDCOLOR3': RGB(254, 227, 4),
+
+  'DIMEDCOLOR1': RGB(246, 128, 186),
+  'DIMEDCOLOR2': RGB(121, 234, 249),
+  'DIMEDCOLOR3': RGB(254, 243, 83),
+}
 
 # Test unit.
 if __name__ == '__main__':

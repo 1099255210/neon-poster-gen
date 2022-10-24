@@ -22,12 +22,12 @@ def getTextSize(text:str, fontpath:str, fontsize:int, direction='ltr') -> Size:
 
 
 def addTextToImg(
-  text:str,
-  img:Mat,
-  fontpath:str,
-  pos=(0, 0),
-  fontsize=50,
-  fontcolor=(0, 0, 0, 0)
+  text: str,
+  img: Mat,
+  fontpath: str,
+  pos= (0, 0),
+  fontsize= 50,
+  fontcolor= (0, 0, 0, 0)
 )-> Mat:
   '''
   Add custom font to image by passing text, image and fontpath,\n
