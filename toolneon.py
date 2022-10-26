@@ -141,8 +141,8 @@ def createNeonSeq(
     tFrame = addNeonTextSet(
       textSet,
       img,
-      './font/Nickainley.otf',
-      200,
+      fontpath,
+      fontsize,
       posSet,
       colorArrangement(textSet)
     )
@@ -189,11 +189,12 @@ if __name__ == '__main__':
   '''
   Generate neon gif
   '''
-  for i in range(0, 10):
+  for i in range(0, 5):
     img = np.zeros((800, 800, 3), dtype=np.uint8)
-    textSet = ['Coffee', 'Bar', 'KTV']
-    frames = createNeonSeq(textSet, img, './font/Nickainley.otf', 180, 8)
-    with imageio.get_writer(f"gen_{i}.gif", mode="I", duration=0.5) as writer:
+    # img = cv.imread('./img/wall_03.jpg')
+    textSet = ['coffee', 'Bar', 'KTV']
+    frames = createNeonSeq(textSet, img, './font/Quicksand.ttf', 180, 5)
+    with imageio.get_writer(f"./4/gen_{i}.gif", mode="I", duration=0.5) as writer:
       for idx, frame in enumerate(frames):
         print("Adding frame to GIF file: ", idx + 1)
         writer.append_data(frame)
