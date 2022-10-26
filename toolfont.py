@@ -39,7 +39,8 @@ def addTextToImg(
   '''
   font = ImageFont.truetype(fontpath, fontsize)
   img_pil = Image.fromarray(img)
-  ImageDraw.Draw(img_pil).text(pos, text, fontcolor, font)
+  d = ImageDraw.Draw(img_pil, mode='RGBA')
+  d.text(pos, text, fontcolor, font, embedded_color=1)
   return np.array(img_pil)
 
 

@@ -3,9 +3,19 @@ import numpy as np
 from typing import List
 import random
 import time
+from enum import Enum
+from PIL import Image
+import imageio
 
 ''' Self created libs ''' 
 import toolfont
+
+class PositionMode(Enum):
+  RandomInCanvas = 1,
+  RandomNoOverlap = 2,
+  HorizentalCentralized = 3,
+  HorizentalCentralizedEvenly = 4,
+
 
 def addNeonText(
   text: str,
@@ -25,7 +35,6 @@ def addNeonText(
   - fontcolor: tuple. Default: (0, 0, 0, 0). (It's BGRA)
   - fontweight: str. Default: 'regular'. Examples: 'bold', 'thin'.
   '''
-
 
   # This ratio is used to adjust the blurcore size.
   if fontweight == 'regular':
@@ -56,7 +65,9 @@ def addNeonTextSet(
   textSet: List[str],
   img: cv.Mat,
   fontpath: str,
-  fontsize= 50
+  fontsize= 50,
+  posSet= None,
+  colorSet = None,
 ):
   '''
   Add a set of neon texts to image by passing text, image and fontpath,\n
@@ -66,8 +77,8 @@ def addNeonTextSet(
   '''
 
   imgSize = (img.shape[0], img.shape[1])
-  posSet = positionArrangement(imgSize, textSet, fontpath, fontsize)
-  colorSet = colorArrangement(textSet)
+  posSet = positionArrangement(imgSize, textSet, fontpath, fontsize) if not posSet else posSet
+  colorSet = colorArrangement(textSet) if not colorSet else colorSet
   for pos, color, text in zip(posSet, colorSet, textSet):
     print(pos, color, text)
     img = addNeonText(text, img, fontpath, pos, fontsize, color)
@@ -79,20 +90,33 @@ def positionArrangement(
   textSet: List[str],
   fontpath: str,
   fontsize= 50,
+  mode= PositionMode.RandomInCanvas
 ):
+  '''
+  Given the image, text set, font&fontsize, generate a list of\n
+  postion which matches the number of the text set.\n
+  optional parameters:\n
+  - mode: (class)PostionMode. Default: PostionMode.RandomInCanvas
+  '''
 
-  random.seed(time.time())
-  posSet = []
-  for text in textSet:
-    size = toolfont.getTextSize(text, fontpath, fontsize)
-    maxX = imgSize[0] - size[0]
-    maxY = imgSize[1] - size[1]
-    posSet.append((random.randint(0, maxX), random.randint(0, maxY)))
-
-  return posSet
+  if mode == PositionMode.RandomInCanvas:
+    random.seed(time.time())
+    posSet = []
+    for text in textSet:
+      size = toolfont.getTextSize(text, fontpath, fontsize)
+      maxX = imgSize[0] - size[0]
+      maxY = imgSize[1] - size[1]
+      posSet.append((random.randint(0, maxX), random.randint(0, maxY)))
+    return posSet
+  else:
+    return None
 
 
 def colorArrangement(textSet: List[str]):
+  '''
+  Given a set of text, generate a list of color which matchse the\n
+  number of the text set.\n
+  '''
   random.seed(time.time())
   colorSet = random.choices(
     list(toolcolor.NeonColorSet.values()), k = len(textSet)
@@ -102,13 +126,39 @@ def colorArrangement(textSet: List[str]):
   return colorSet
 
 
+def createNeonSeq(
+  textSet: List[str],
+  img: cv.Mat,
+  fontpath: str,
+  fontsize= 50,
+  time = 5,
+) -> List[cv.Mat]:
+
+  imgSize = (img.shape[0], img.shape[1])
+  posSet = positionArrangement(imgSize, textSet, fontpath, fontsize)
+  frames:List[Image.Image] = []
+  for _ in range(0, time // 1):
+    tFrame = addNeonTextSet(
+      textSet,
+      img,
+      './font/Nickainley.otf',
+      200,
+      posSet,
+      colorArrangement(textSet)
+    )
+    frames.append(tFrame)
+  return frames
+
+
 
 # Test unit
 if __name__ == '__main__':
   import toolcolor
   
-  img = cv.imread('./img/wall_03.jpg')
-  
+  '''
+  Generate single neon text
+  '''
+  # img = cv.imread('./img/wall_03.jpg')
   # img = np.zeros((800, 800, 3), dtype=np.uint8)
   # img = addNeonText(
   #   'Shopping',
@@ -119,8 +169,31 @@ if __name__ == '__main__':
   #   toolcolor.VIVIDCOLOR1.toBGRAtuple(),
   #   'bold',
   # )
-  textSet = ['Coffee', 'Bar', 'KTV']
-  img = addNeonTextSet(textSet, img, './font/NeonSans.ttf', 200)
-  cv.namedWindow("Display", cv.WINDOW_NORMAL)
-  cv.imshow('Display', img)
-  cv.waitKey(0)
+  # cv.namedWindow("Display", cv.WINDOW_NORMAL)
+  # cv.imshow('Display', img)
+  # cv.waitKey(0)
+  
+  '''
+  Generate neon text set
+  '''
+  # img = cv.imread('./img/wall_03.jpg')
+  # img = np.zeros((800, 800, 3), dtype=np.uint8)
+
+  # textSet = ['Coffee', 'Bar', 'KTV']
+  # img = addNeonTextSet(textSet, img, './font/Nickainley.otf', 180)
+  # cv.namedWindow("Display", cv.WINDOW_NORMAL)
+  # cv.imshow('Display', img)
+  # cv.waitKey(0)
+
+
+  '''
+  Generate neon gif
+  '''
+  for i in range(0, 10):
+    img = np.zeros((800, 800, 3), dtype=np.uint8)
+    textSet = ['Coffee', 'Bar', 'KTV']
+    frames = createNeonSeq(textSet, img, './font/Nickainley.otf', 180, 8)
+    with imageio.get_writer(f"gen_{i}.gif", mode="I", duration=0.5) as writer:
+      for idx, frame in enumerate(frames):
+        print("Adding frame to GIF file: ", idx + 1)
+        writer.append_data(frame)

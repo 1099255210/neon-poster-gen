@@ -6,6 +6,7 @@ import toolcolor
 import toolfont
 
 '''
+
 NOTICE:
 libraqm(https://github.com/HOST-Oman/libraqm) is needed.
 If the system is Windows,
