@@ -27,7 +27,8 @@ def addTextToImg(
   fontpath: str,
   pos= (0, 0),
   fontsize= 50,
-  fontcolor= (0, 0, 0, 0)
+  fontcolor= (0, 0, 0, 0),
+  outline= 0,
 )-> Mat:
   '''
   Add custom font to image by passing text, image and fontpath,\n
@@ -36,11 +37,20 @@ def addTextToImg(
   - pos: tuple. Default: (0, 0).
   - fontsize: int. Default: 50.
   - fontcolor: tuple. Default: (0, 0, 0, 0). (It's BGRA)
+  - outline: double. Default: 0.
   '''
   font = ImageFont.truetype(fontpath, fontsize)
   img_pil = Image.fromarray(img)
-  d = ImageDraw.Draw(img_pil, mode='RGBA')
+  d= ImageDraw.Draw(img_pil)
   d.text(pos, text, fontcolor, font, embedded_color=1)
+  x = pos[0]
+  y = pos[1]
+  # d.text(pos, text, fontcolor, font, embedded_color=1)
+  if outline > 0:
+    d.text((x - outline, y), text, font=font, fill=fontcolor, embedded_color=1)
+    d.text((x + outline, y), text, font=font, fill=fontcolor, embedded_color=1)
+    d.text((x, y - outline), text, font=font, fill=fontcolor, embedded_color=1)
+    d.text((x, y + outline), text, font=font, fill=fontcolor, embedded_color=1)
   return np.array(img_pil)
 
 
@@ -49,6 +59,6 @@ if __name__ == '__main__':
   import cv2 as cv
   img = cv.imread('./img/wall_01.jpg')
   # img = np.zeros((512,512,3), np.uint8)
-  img = addTextToImg('nihao', img, './font/NeonSans.ttf',pos=(50, 50), fontsize=50)
+  img = addTextToImg('nihao', img, './font/NeonSans.ttf',pos=(50, 50), fontsize=200)
   cv.imshow('window', img)
   cv.waitKey(0)

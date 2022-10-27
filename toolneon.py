@@ -37,13 +37,14 @@ def addNeonText(
   '''
 
   # This ratio is used to adjust the blurcore size.
-  if fontweight == 'regular':
-    ratio = 12
-  elif fontweight == 'bold':
-    ratio = 9
-  elif fontweight == 'thin':
-    ratio = 15
-  blurcore = (fontsize // ratio, fontsize // ratio)
+  # if fontweight == 'regular':
+  #   ratio = 12
+  # elif fontweight == 'bold':
+  #   ratio = 9
+  # elif fontweight == 'thin':
+  #   ratio = 15
+  # blurcore = (fontsize // ratio, fontsize // ratio)
+  blurcore = (20, 20)
 
   img = cv.cvtColor(img, cv.COLOR_BGR2BGRA)
   img = toolfont.addTextToImg(
@@ -57,6 +58,7 @@ def addNeonText(
   img_blur = cv.blur(img_blur, blurcore)
 
   blend = cv.addWeighted(img_text, 0.5, img_blur, 0.9, 0.0)
+
   dst = cv.addWeighted(img, 1, blend, 1, 0.0)
   return dst
 
@@ -165,11 +167,11 @@ if __name__ == '__main__':
   #   img,
   #   './font/Nickainley.otf',
   #   (50, 50),
-  #   150,
+  #   200,
   #   toolcolor.VIVIDCOLOR1.toBGRAtuple(),
   #   'bold',
   # )
-  # cv.namedWindow("Display", cv.WINDOW_NORMAL)
+  # cv.namedWindow("Display", cv.WINDOW_AUTOSIZE)
   # cv.imshow('Display', img)
   # cv.waitKey(0)
   
@@ -190,10 +192,10 @@ if __name__ == '__main__':
   Generate neon gif
   '''
   for i in range(0, 5):
-    img = np.zeros((800, 800, 3), dtype=np.uint8)
+    img = np.zeros((1000, 1000, 3), dtype=np.uint8)
     # img = cv.imread('./img/wall_03.jpg')
-    textSet = ['coffee', 'Bar', 'KTV']
-    frames = createNeonSeq(textSet, img, './font/Quicksand.ttf', 180, 5)
+    textSet = ['coffee', 'cassa nova', 'California', '不期而遇的夏天', 'rock&roll', 'luvsic']
+    frames = createNeonSeq(textSet, img, './font/Quicksand.ttf', 150, 5)
     with imageio.get_writer(f"./4/gen_{i}.gif", mode="I", duration=0.5) as writer:
       for idx, frame in enumerate(frames):
         print("Adding frame to GIF file: ", idx + 1)
