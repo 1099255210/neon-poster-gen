@@ -29,6 +29,7 @@ def addTextToImg(
   fontsize= 50,
   fontcolor= (0, 0, 0, 0),
   outline= 0,
+  direction= 'rtl',
 )-> Mat:
   '''
   Add custom font to image by passing text, image and fontpath,\n
@@ -38,19 +39,20 @@ def addTextToImg(
   - fontsize: int. Default: 50.
   - fontcolor: tuple. Default: (0, 0, 0, 0). (It's BGRA)
   - outline: double. Default: 0.
+  - direction: str. Default: 'rtl'. Examples: 'ttb'.
   '''
   font = ImageFont.truetype(fontpath, fontsize)
   img_pil = Image.fromarray(img)
   d= ImageDraw.Draw(img_pil)
-  d.text(pos, text, fontcolor, font, embedded_color=1)
+  d.text(pos, text, fontcolor, font, embedded_color=1, direction=direction)
   x = pos[0]
   y = pos[1]
   # d.text(pos, text, fontcolor, font, embedded_color=1)
   if outline > 0:
-    d.text((x - outline, y), text, font=font, fill=fontcolor, embedded_color=1)
-    d.text((x + outline, y), text, font=font, fill=fontcolor, embedded_color=1)
-    d.text((x, y - outline), text, font=font, fill=fontcolor, embedded_color=1)
-    d.text((x, y + outline), text, font=font, fill=fontcolor, embedded_color=1)
+    d.text((x - outline, y), text, font=font, fill=fontcolor, embedded_color=1, direction=direction)
+    d.text((x + outline, y), text, font=font, fill=fontcolor, embedded_color=1, direction=direction)
+    d.text((x, y - outline), text, font=font, fill=fontcolor, embedded_color=1, direction=direction)
+    d.text((x, y + outline), text, font=font, fill=fontcolor, embedded_color=1, direction=direction)
   return np.array(img_pil)
 
 
